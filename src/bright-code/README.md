@@ -1,5 +1,15 @@
 # Bright-code
 
+## About
+
+Bright code is based on [highlight.js](https://github.com/highlightjs/highlight.js) extracted code highlighting plug-in for the front end.
+
+It only supports four languages: HTML, CSS, JavaScript and shell.
+
+The volume is very small, only 66kb.
+
+Code highlight style use [tyh-theme-vscode](https://github.com/Tyh2001/tyh-theme-vscode).
+
 ## Install
 
 npm
@@ -61,12 +71,16 @@ createApp(App)
 </script>
 ```
 
-## About
+## Link
 
-Bright code is based on [highlight.js](https://github.com/highlightjs/highlight.js) extracted code highlighting plug-in for the front end.
+Bright-code
 
-It only supports four languages: HTML, CSS, JavaScript and shell.
+- [NPM](https://www.npmjs.com/package/bright-code)
 
-The volume is very small, only 66kb.
+Use together
 
-Code highlight style use [tyh-theme-vscode](https://github.com/Tyh2001/tyh-theme-vscode)
+- [vite-plugin-md](https://github.com/antfu/vite-plugin-md)
+
+## License
+
+[田同学](https://github.com/Tyh2001/bright-code/blob/master/LICENSE)
