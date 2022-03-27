@@ -1,13 +1,5 @@
 # Bright-code
 
-## About
-
-Bright code is based on [highlight.js](https://github.com/highlightjs/highlight.js) extracted code highlighting plug-in for the front end.
-
-It only supports four languages: HTML, CSS, JavaScript and shell.
-
-The volume is very small, only 66kb.
-
 ## Install
 
 npm
@@ -33,14 +25,14 @@ import brightCode from './bright-code'
 import './bright-code/theme/tyh-theme.css'
 
 createApp(App)
-  .use(app => {
+  .use((app) => {
     app.directive('bright', {
-      mounted (el) {
+      mounted(el) {
         const codes = el.querySelectorAll('pre code')
-        codes.forEach(code => {
+        codes.forEach((code) => {
           brightCode.highlightElement(code)
         })
-      }
+      },
     })
   })
   .mount('#app')
@@ -54,7 +46,7 @@ createApp(App)
 </template>
 
 <script setup>
-const HTML = `
+  const HTML = `
 <tyh-button type="primary" @click="open = true">点我打开</tyh-button>
 
 <tyh-radio v-model="radio" label="right">从右面弹出</tyh-radio>
@@ -68,3 +60,13 @@ const HTML = `
 `
 </script>
 ```
+
+## About
+
+Bright code is based on [highlight.js](https://github.com/highlightjs/highlight.js) extracted code highlighting plug-in for the front end.
+
+It only supports four languages: HTML, CSS, JavaScript and shell.
+
+The volume is very small, only 66kb.
+
+Code highlight style use [tyh-theme-vscode](https://github.com/Tyh2001/tyh-theme-vscode)
