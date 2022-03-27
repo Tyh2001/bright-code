@@ -6,7 +6,7 @@ Bright code is based on [highlight.js](https://github.com/highlightjs/highlight.
 
 It only supports four languages: HTML, CSS, JavaScript and shell.
 
-The volume is very small, only 66kb.
+The volume is very small, only 66KB.
 
 Code highlight style use [tyh-theme-vscode](https://github.com/Tyh2001/tyh-theme-vscode).
 
