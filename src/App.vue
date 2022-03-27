@@ -1,21 +1,112 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div id="app">
+    <h1>BrightCode</h1>
+    <h2>Shell</h2>
+    <pre v-bright>
+      <code>{{ Shell }}</code>
+    </pre>
+
+    <h2>HTML</h2>
+    <pre v-bright>
+      <code>{{ HTML }}</code>
+    </pre>
+
+    <h2>JavaScript</h2>
+    <pre v-bright>
+      <code>{{ JavaScript }}</code>
+    </pre>
+
+    <h2>Css</h2>
+    <pre v-bright>
+      <code>{{ Css }}</code>
+    </pre>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<script setup>
+const Shell = `npm install bright-code -S`
+const HTML = `
+<tyh-button type="primary" @click="open = true">点我打开</tyh-button>
+
+<tyh-radio v-model="radio" label="right">从右面弹出</tyh-radio>
+<tyh-radio v-model="radio" label="left">从左面弹出</tyh-radio>
+<tyh-radio v-model="radio" label="bottom">从下面弹出</tyh-radio>
+<tyh-radio v-model="radio" label="top">从上面弹出</tyh-radio>
+
+<tyh-drawer v-model="open" :direction="radio" title="这是标题">
+  hello，欢迎使用 tyh-ui!
+</tyh-drawer>
+`
+const JavaScript = `
+function render(node, root) {
+  const el = document.createElement(node.tag)
+
+  for (const key in node.props) {
+    if (/^on/.test(key)) {
+      el.addEventListener(key.substr(2).toLowerCase(), () => {
+        node.props[key]()
+      })
+    }
+  }
+
+  if (typeof node.children === 'string') {
+    const text = document.createTextNode(node.children)
+    console.log(text)
+    el.appendChild(text)
+  } else if (Array.isArray(node.children) && node.children.length) {
+    node.children.forEach((item) => {
+      render(item, el)
+    })
+  }
+
+  root.appendChild(el)
+}
+`
+const Css = `
+.tyh-header,
+.tyh-footer {
+  background-color: #b3c0d1;
+  color: #333;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  line-height: 60px;
+}
+
+.tyh-aside {
+  background-color: #d3dce6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.tyh-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+}
+
+body > .tyh-container {
+  margin-bottom: 40px;
+}
+
+.tyh-container:nth-child(5) .tyh-aside,
+.tyh-container:nth-child(6) .tyh-aside {
+  line-height: 260px;
+}
+
+.tyh-container:nth-child(7) .tyh-aside {
+  line-height: 320px;
+}
+`
+</script>
+
+<style scoped>
+#app {
+  max-width: 900px;
+  margin: auto;
+}
+#app h1,
+#app h2 {
+  color: #333;
 }
 </style>
