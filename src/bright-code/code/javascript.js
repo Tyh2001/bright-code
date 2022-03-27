@@ -1,6 +1,6 @@
 const IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*'
 const KEYWORDS = [
-  'as', // for exports
+  'as',
   'in',
   'of',
   'if',
@@ -30,9 +30,6 @@ const KEYWORDS = [
   'yield',
   'const',
   'class',
-  // JS handles these with a special rule
-  // "get",
-  // "set",
   'debugger',
   'async',
   'await',
@@ -44,22 +41,17 @@ const KEYWORDS = [
 ]
 const LITERALS = ['true', 'false', 'null', 'undefined', 'NaN', 'Infinity']
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 const TYPES = [
-  // Fundamental objects
   'Object',
   'Function',
   'Boolean',
   'Symbol',
-  // numbers and dates
   'Math',
   'Date',
   'Number',
   'BigInt',
-  // text
   'String',
   'RegExp',
-  // Indexed collections
   'Array',
   'Float32Array',
   'Float64Array',
@@ -72,28 +64,22 @@ const TYPES = [
   'Uint32Array',
   'BigInt64Array',
   'BigUint64Array',
-  // Keyed collections
   'Set',
   'Map',
   'WeakSet',
   'WeakMap',
-  // Structured data
   'ArrayBuffer',
   'SharedArrayBuffer',
   'Atomics',
   'DataView',
   'JSON',
-  // Control abstraction objects
   'Promise',
   'Generator',
   'GeneratorFunction',
   'AsyncFunction',
-  // Reflection
   'Reflect',
   'Proxy',
-  // Internationalization
   'Intl',
-  // WebAssembly
   'WebAssembly'
 ]
 
@@ -113,10 +99,8 @@ const BUILT_IN_GLOBALS = [
   'setTimeout',
   'clearInterval',
   'clearTimeout',
-
   'require',
   'exports',
-
   'eval',
   'isFinite',
   'isNaN',
@@ -139,20 +123,13 @@ const BUILT_IN_VARIABLES = [
   'document',
   'localStorage',
   'module',
-  'global' // Node.js
+  'global'
 ]
 
 const BUILT_INS = [].concat(BUILT_IN_GLOBALS, TYPES, ERROR_TYPES)
 
 export const javascript = hljs => {
   const regex = hljs.regex
-  /**
-   * Takes a string like "<Booger" and checks to see
-   * if we can find a matching "</Booger" later in the
-   * content.
-   * @param {RegExpMatchArray} match
-   * @param {{after:number}} param1
-   */
   const hasClosingTag = (match, { after }) => {
     const tag = '</' + match[0].slice(1)
     const pos = match.input.indexOf(tag, after)
@@ -164,53 +141,30 @@ export const javascript = hljs => {
     begin: '<>',
     end: '</>'
   }
-  // to avoid some special cases inside isTrulyOpeningTag
   const XML_SELF_CLOSING = /<[A-Za-z0-9\\._:-]+\s*\/>/
   const XML_TAG = {
     begin: /<[A-Za-z0-9\\._:-]+/,
     end: /\/[A-Za-z0-9\\._:-]+>|\/>/,
-    /**
-     * @param {RegExpMatchArray} match
-     * @param {CallbackResponse} response
-     */
     isTrulyOpeningTag: (match, response) => {
       const afterMatchIndex = match[0].length + match.index
       const nextChar = match.input[afterMatchIndex]
       if (
-        // HTML should not include another raw `<` inside a tag
-        // nested type?
-        // `<Array<Array<number>>`, etc.
         nextChar === '<' ||
-        // the , gives away that this is not HTML
-        // `<T, A extends keyof T, V>`
         nextChar === ','
       ) {
         response.ignoreMatch()
         return
       }
-
-      // `<something>`
-      // Quite possibly a tag, lets look for a matching closing tag...
       if (nextChar === '>') {
-        // if we cannot find a matching closing tag, then we
-        // will ignore it
         if (!hasClosingTag(match, { after: afterMatchIndex })) {
           response.ignoreMatch()
         }
       }
-
-      // `<blah />` (self-closing)
-      // handled by simpleSelfClosing rule
-
-      // `<From extends string>`
-      // technically this could be HTML, but it smells like a type
       let m
       const afterMatch = match.input.substr(afterMatchIndex)
-      // NOTE: This is ugh, but added specifically for https://github.com/highlightjs/highlight.js/issues/3276
       if ((m = afterMatch.match(/^\s+extends\s+/))) {
         if (m.index === 0) {
           response.ignoreMatch()
-          // eslint-disable-next-line no-useless-return
           return
         }
       }
@@ -224,16 +178,12 @@ export const javascript = hljs => {
     'variable.language': BUILT_IN_VARIABLES
   }
 
-  // https://tc39.es/ecma262/#sec-literals-numeric-literals
   const decimalDigits = '[0-9](_?[0-9])*'
   const frac = `\\.(${decimalDigits})`
-  // DecimalIntegerLiteral, including Annex B NonOctalDecimalIntegerLiteral
-  // https://tc39.es/ecma262/#sec-additional-syntax-numeric-literals
   const decimalInteger = `0|[1-9](_?[0-9])*|0[0-7]*[89][0-9]*`
   const NUMBER = {
     className: 'number',
     variants: [
-      // DecimalLiteral
       {
         begin:
           `(\\b(${decimalInteger})((${frac})|\\.)?|(${frac}))` +
@@ -241,16 +191,12 @@ export const javascript = hljs => {
       },
       { begin: `\\b(${decimalInteger})\\b((${frac})\\b|\\.)?|(${frac})\\b` },
 
-      // DecimalBigIntegerLiteral
       { begin: `\\b(0|[1-9](_?[0-9])*)n\\b` },
 
-      // NonDecimalIntegerLiteral
       { begin: '\\b0[xX][0-9a-fA-F](_?[0-9a-fA-F])*n?\\b' },
       { begin: '\\b0[bB][0-1](_?[0-1])*n?\\b' },
       { begin: '\\b0[oO][0-7](_?[0-7])*n?\\b' },
 
-      // LegacyOctalIntegerLiteral (does not include underscore separators)
-      // https://tc39.es/ecma262/#sec-additional-syntax-numeric-literals
       { begin: '\\b0[0-7]+n?\\b' }
     ],
     relevance: 0
@@ -261,7 +207,7 @@ export const javascript = hljs => {
     begin: '\\$\\{',
     end: '\\}',
     keywords: KEYWORDS$1,
-    contains: [] // defined later
+    contains: []
   }
   const HTML_TEMPLATE = {
     begin: 'html`',
@@ -314,8 +260,6 @@ export const javascript = hljs => {
             endsParent: true,
             relevance: 0
           },
-          // eat spaces (not newlines) so we can find
-          // types or variables
           {
             begin: /(?=[^\n])\s/,
             relevance: 0
@@ -339,13 +283,8 @@ export const javascript = hljs => {
     CSS_TEMPLATE,
     TEMPLATE_STRING,
     NUMBER
-    // This is intentional:
-    // See https://github.com/highlightjs/highlight.js/issues/3288
-    // hljs.REGEXP_MODE
   ]
   SUBST.contains = SUBST_INTERNALS.concat({
-    // we need to pair up {} inside our subst to prevent
-    // it from ending too early by matching another }
     begin: /\{/,
     end: /\}/,
     keywords: KEYWORDS$1,
@@ -353,7 +292,6 @@ export const javascript = hljs => {
   })
   const SUBST_AND_COMMENTS = [].concat(COMMENT, SUBST.contains)
   const PARAMS_CONTAINS = SUBST_AND_COMMENTS.concat([
-    // eat recursive parens in sub expressions
     {
       begin: /\(/,
       end: /\)/,
@@ -371,10 +309,8 @@ export const javascript = hljs => {
     contains: PARAMS_CONTAINS
   }
 
-  // ES6 classes
   const CLASS_OR_EXTENDS = {
     variants: [
-      // class Car extends vehicle
       {
         match: [
           /class/,
@@ -392,7 +328,6 @@ export const javascript = hljs => {
           7: 'title.class.inherited'
         }
       },
-      // class Car
       {
         match: [/class/, /\s+/, IDENT_RE$1],
         scope: {
@@ -406,23 +341,14 @@ export const javascript = hljs => {
   const CLASS_REFERENCE = {
     relevance: 0,
     match: regex.either(
-      // Hard coded exceptions
       /\bJSON/,
-      // Float32Array, OutT
       /\b[A-Z][a-z]+([A-Z][a-z]*|\d)*/,
-      // CSSFactory, CSSFactoryT
       /\b[A-Z]{2,}([A-Z][a-z]+|\d)+([A-Z][a-z]*)*/,
-      // FPs, FPsT
       /\b[A-Z]{2,}[a-z]+([A-Z][a-z]+|\d)*([A-Z][a-z]*)*/
-      // P
-      // single letters are not highlighted
-      // BLAH
-      // this will be flagged as a UPPER_CASE_CONSTANT instead
     ),
     className: 'title.class',
     keywords: {
       _: [
-        // se we still get relevance credit for JS library classes
         ...TYPES,
         ...ERROR_TYPES
       ]
@@ -441,7 +367,6 @@ export const javascript = hljs => {
       {
         match: [/function/, /\s+/, IDENT_RE$1, /(?=\s*\()/]
       },
-      // anonymous function
       {
         match: [/function/, /\s*(?=\()/]
       }
@@ -461,7 +386,7 @@ export const javascript = hljs => {
     className: 'variable.constant'
   }
 
-  function noneOf(list) {
+  function noneOf (list) {
     return regex.concat('(?!', list.join('|'), ')')
   }
 
@@ -496,7 +421,6 @@ export const javascript = hljs => {
     },
     contains: [
       {
-        // eat to avoid empty params
         begin: /\(\)/
       },
       PARAMS
@@ -521,7 +445,7 @@ export const javascript = hljs => {
       IDENT_RE$1,
       /\s*/,
       /=\s*/,
-      /(async\s*)?/, // async is optional
+      /(async\s*)?/,
       regex.lookahead(FUNC_LEAD_IN_RE)
     ],
     keywords: 'async',
@@ -536,7 +460,6 @@ export const javascript = hljs => {
     name: 'Javascript',
     aliases: ['js', 'jsx', 'mjs', 'cjs'],
     keywords: KEYWORDS$1,
-    // this will be extended by TypeScript
     exports: { PARAMS_CONTAINS, CLASS_REFERENCE },
     illegal: /#(?![$_A-z])/,
     contains: [
@@ -561,7 +484,6 @@ export const javascript = hljs => {
       },
       FUNCTION_VARIABLE,
       {
-        // "value" container
         begin: '(' + hljs.RE_STARTERS_RE + '|\\b(case|return|throw)\\b)\\s*',
         keywords: 'return throw case',
         relevance: 0,
@@ -570,9 +492,6 @@ export const javascript = hljs => {
           hljs.REGEXP_MODE,
           {
             className: 'function',
-            // we have to count the parens to make sure we actually have the
-            // correct bounding ( ) before the =>.  There could be any number of
-            // sub-expressions inside also surrounded by parens.
             begin: FUNC_LEAD_IN_RE,
             returnBegin: true,
             end: '\\s*=>',
@@ -602,7 +521,6 @@ export const javascript = hljs => {
             ]
           },
           {
-            // could be a comma delimited list of params to a function call
             begin: /,/,
             relevance: 0
           },
@@ -611,14 +529,11 @@ export const javascript = hljs => {
             relevance: 0
           },
           {
-            // JSX
             variants: [
               { begin: FRAGMENT.begin, end: FRAGMENT.end },
               { match: XML_SELF_CLOSING },
               {
                 begin: XML_TAG.begin,
-                // we carefully check the opening tag to see if it truly
-                // is a tag and not a false positive
                 'on:begin': XML_TAG.isTrulyOpeningTag,
                 end: XML_TAG.end
               }
@@ -637,24 +552,19 @@ export const javascript = hljs => {
       },
       FUNCTION_DEFINITION,
       {
-        // prevent this from getting swallowed up by function
-        // since they appear "function like"
         beginKeywords: 'while if switch catch for'
       },
       {
-        // we have to count the parens to make sure we actually have the correct
-        // bounding ( ).  There could be any number of sub-expressions inside
-        // also surrounded by parens.
         begin:
           '\\b(?!function)' +
           hljs.UNDERSCORE_IDENT_RE +
-          '\\(' + // first parens
+          '\\(' +
           '[^()]*(\\(' +
           '[^()]*(\\(' +
           '[^()]*' +
           '\\)[^()]*)*' +
           '\\)[^()]*)*' +
-          '\\)\\s*\\{', // end parens
+          '\\)\\s*\\{',
         returnBegin: true,
         label: 'func.def',
         contains: [
@@ -665,15 +575,11 @@ export const javascript = hljs => {
           })
         ]
       },
-      // catch ... so it won't trigger the property rule below
       {
         match: /\.\.\./,
         relevance: 0
       },
       PROPERTY_ACCESS,
-      // hack: prevents detection of keywords in some circumstances
-      // .keyword()
-      // $keyword = x
       {
         match: '\\$' + IDENT_RE$1,
         relevance: 0
@@ -688,7 +594,7 @@ export const javascript = hljs => {
       CLASS_OR_EXTENDS,
       GETTER_OR_SETTER,
       {
-        match: /\$[(.]/ // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
+        match: /\$[(.]/
       }
     ]
   }

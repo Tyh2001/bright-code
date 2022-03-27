@@ -117,7 +117,6 @@ export const xml = hljs => {
         relevance: 10
       },
       XML_ENTITIES,
-      // xml processing instructions
       {
         className: 'meta',
         end: /\?>/,
@@ -134,11 +133,6 @@ export const xml = hljs => {
       },
       {
         className: 'tag',
-        /*
-        The lookahead pattern (?=...) ensures that 'begin' only matches
-        '<style' as a single word, followed by a whitespace or an
-        ending bracket.
-        */
         begin: /<style(?=\s|>)/,
         end: />/,
         keywords: { name: 'style' },
@@ -151,7 +145,6 @@ export const xml = hljs => {
       },
       {
         className: 'tag',
-        // See the comment in the <style tag about the lookahead pattern
         begin: /<script(?=\s|>)/,
         end: />/,
         keywords: { name: 'script' },
@@ -162,7 +155,6 @@ export const xml = hljs => {
           subLanguage: ['javascript', 'handlebars', 'xml']
         }
       },
-      // we need this for now for jSX
       {
         className: 'tag',
         begin: /<>|<\/>/
@@ -175,9 +167,6 @@ export const xml = hljs => {
           regex.lookahead(
             regex.concat(
               TAG_NAME_RE,
-              // <tag/>
-              // <tag>
-              // <tag ...
               regex.either(/\/>/, />/, /\s/)
             )
           )
@@ -192,7 +181,6 @@ export const xml = hljs => {
           }
         ]
       },
-      // close tag
       {
         className: 'tag',
         begin: regex.concat(

@@ -41,7 +41,6 @@ const MODES = hljs => {
     }
   }
 }
-
 const TAGS = [
   'a',
   'abbr',
@@ -116,7 +115,6 @@ const TAGS = [
   'var',
   'video'
 ]
-
 const MEDIA_FEATURES = [
   'any-hover',
   'any-pointer',
@@ -147,14 +145,11 @@ const MEDIA_FEATURES = [
   'scripting',
   'update',
   'width',
-  // TODO: find a better solution?
   'min-width',
   'max-width',
   'min-height',
   'max-height'
 ]
-
-// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
 const PSEUDO_CLASSES = [
   'active',
   'any-link',
@@ -163,7 +158,7 @@ const PSEUDO_CLASSES = [
   'current',
   'default',
   'defined',
-  'dir', // dir()
+  'dir',
   'disabled',
   'drop',
   'empty',
@@ -176,27 +171,27 @@ const PSEUDO_CLASSES = [
   'focus',
   'focus-visible',
   'focus-within',
-  'has', // has()
-  'host', // host or host()
-  'host-context', // host-context()
+  'has',
+  'host',
+  'host-context',
   'hover',
   'indeterminate',
   'in-range',
   'invalid',
-  'is', // is()
-  'lang', // lang()
+  'is',
+  'lang',
   'last-child',
   'last-of-type',
   'left',
   'link',
   'local-link',
-  'not', // not()
-  'nth-child', // nth-child()
-  'nth-col', // nth-col()
-  'nth-last-child', // nth-last-child()
-  'nth-last-col', // nth-last-col()
-  'nth-last-of-type', //nth-last-of-type()
-  'nth-of-type', //nth-of-type()
+  'not',
+  'nth-child',
+  'nth-col',
+  'nth-last-child',
+  'nth-last-col',
+  'nth-last-of-type',
+  'nth-of-type',
   'only-child',
   'only-of-type',
   'optional',
@@ -214,10 +209,9 @@ const PSEUDO_CLASSES = [
   'user-invalid',
   'valid',
   'visited',
-  'where' // where()
+  'where'
 ]
 
-// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
 const PSEUDO_ELEMENTS = [
   'after',
   'backdrop',
@@ -541,7 +535,7 @@ const ATTRIBUTES = [
   'shape-outside',
   'speak',
   'speak-as',
-  'src', // @font-face
+  'src',
   'tab-size',
   'table-layout',
   'text-align',
@@ -594,8 +588,6 @@ const ATTRIBUTES = [
   'word-wrap',
   'writing-mode',
   'z-index'
-  // reverse makes sure longer attributes `font-weight` are matched fully
-  // instead of getting false positives on say `font`
 ].reverse()
 
 export const css = hljs => {
@@ -603,7 +595,7 @@ export const css = hljs => {
   const modes = MODES(hljs)
   const VENDOR_PREFIX = { begin: /-(webkit|moz|ms|o)-(?=[a-z])/ }
   const AT_MODIFIERS = 'and or not only'
-  const AT_PROPERTY_RE = /@-?\w[\w]*(-\w+)*/ // @-webkit-keyframes
+  const AT_PROPERTY_RE = /@-?\w[\w]*(-\w+)*/
   const IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*'
   const STRINGS = [hljs.APOS_STRING_MODE, hljs.QUOTE_STRING_MODE]
 
@@ -613,15 +605,11 @@ export const css = hljs => {
     illegal: /[=|'\$]/,
     keywords: { keyframePosition: 'from to' },
     classNameAliases: {
-      // for visual continuity with `tag {}` and because we
-      // don't have a great class for this?
       keyframePosition: 'selector-tag'
     },
     contains: [
       modes.BLOCK_COMMENT,
       VENDOR_PREFIX,
-      // to recognize keyframe 40% etc which are outside the scope of our
-      // attribute value mode
       modes.CSS_NUMBER_MODE,
       {
         className: 'selector-id',
@@ -641,18 +629,11 @@ export const css = hljs => {
           { begin: ':(:)?(' + PSEUDO_ELEMENTS.join('|') + ')' }
         ]
       },
-      // we may actually need this (12/2020)
-      // { // pseudo-selector params
-      //   begin: /\(/,
-      //   end: /\)/,
-      //   contains: [ hljs.CSS_NUMBER_MODE ]
-      // },
       modes.CSS_VARIABLE,
       {
         className: 'attribute',
         begin: '\\b(' + ATTRIBUTES.join('|') + ')\\b'
       },
-      // attribute values
       {
         begin: /:/,
         end: /[;}{]/,
@@ -662,19 +643,14 @@ export const css = hljs => {
           modes.IMPORTANT,
           modes.CSS_NUMBER_MODE,
           ...STRINGS,
-          // needed to highlight these as strings and to avoid issues with
-          // illegal characters that might be inside urls that would tigger the
-          // languages illegal stack
           {
             begin: /(url|data-uri)\(/,
             end: /\)/,
-            relevance: 0, // from keywords
+            relevance: 0,
             keywords: { built_in: 'url data-uri' },
             contains: [
               {
                 className: 'string',
-                // any character other than `)` as in `url()` will be the start
-                // of a string, which ends with `)` (from the parent mode)
                 begin: /[^)]/,
                 endsWithParent: true,
                 excludeEnd: true
@@ -688,7 +664,7 @@ export const css = hljs => {
         begin: regex.lookahead(/@/),
         end: '[{;]',
         relevance: 0,
-        illegal: /:/, // break on Less variables @var: ...
+        illegal: /:/,
         contains: [
           {
             className: 'keyword',
