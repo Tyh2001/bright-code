@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-const Shell = `npm install bright-code -S`
+const Shell = `npm install bright-code`
 const HTML = `
 <tyh-button type="primary" @click="open = true">点我打开</tyh-button>
 

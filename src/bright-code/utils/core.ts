@@ -32,7 +32,7 @@ function deepFreeze(obj) {
 
 deepFreezeEs6.exports = deepFreeze
 
-const deepFreeze$1: {} = deepFreezeEs6.exports
+const deepFreeze$1: any = deepFreezeEs6.exports
 
 class Response {
   data: any
@@ -131,6 +131,7 @@ class HTMLRenderer {
 class TokenTree {
   rootNode: object
   stack: object[]
+
   constructor() {
     this.rootNode = { children: [] }
     this.stack = [this.rootNode]
@@ -170,7 +171,7 @@ class TokenTree {
   }
 
   walk(builder) {
-    return this.constructor._walk(builder, this.rootNode)
+    return TokenTree._walk(builder, this.rootNode)
   }
 
   static _walk(builder, node) {
@@ -325,7 +326,8 @@ function _rewriteBackreferences(regexps, { joinWith }) {
     .join(joinWith)
 }
 
-const SHEBANG = (opts = {}) => {
+type optionType = { binary: any; begin: any }
+const SHEBANG = (opts: optionType) => {
   const beginShebang = /^#![ ]*\//
   if (opts.binary) {
     opts.begin = concat(beginShebang, /.*\b/, opts.binary, /\b.*/)
@@ -643,7 +645,7 @@ function MultiClass(mode) {
 }
 
 function compileLanguage(language) {
-  function langRe(value, global) {
+  function langRe(value, global?) {
     return new RegExp(
       source(value),
       'm' +
@@ -744,7 +746,7 @@ function compileLanguage(language) {
       let result = m.exec(s)
 
       if (this.resumingScanAtSamePosition()) {
-        if (result && result.index === this.lastIndex);
+        if (result && result.index === this.lastIndex) { }
         else {
           const m2 = this.getMatcher(0)
           m2.lastIndex = this.lastIndex + 1
@@ -780,7 +782,7 @@ function compileLanguage(language) {
     return mm
   }
 
-  function compileMode(mode, parent) {
+  function compileMode(mode, parent?) {
     const cmode = mode
     if (mode.isCompiled) return cmode
       ;[scopeClassName, compileMatch, MultiClass, beforeMatchExt].forEach(ext =>
@@ -841,13 +843,6 @@ function compileLanguage(language) {
   }
 
   if (!language.compilerExtensions) language.compilerExtensions = []
-
-  if (language.contains && language.contains.includes('self')) {
-    throw new Error(
-      'ERR: contains `self` is not supported at the top-level of a language.  See documentation.'
-    )
-  }
-
   language.classNameAliases = inherit$1(language.classNameAliases || {})
 
   return compileMode(language)
@@ -886,7 +881,7 @@ function expandOrCloneMode(mode) {
 const escape = escapeHTML
 const inherit = inherit$1
 const NO_MATCH = Symbol('nomatch')
-const MAX_KEYWORD_HITS = 7
+const MAX_KEYWORD_HITS: number = 7
 
 const HLJS = function (hljs) {
   const languages = Object.create(null)
@@ -937,7 +932,7 @@ const HLJS = function (hljs) {
       .find(_class => shouldNotHighlight(_class) || getLanguage(_class))
   }
 
-  function highlight(codeOrLanguageName, optionsOrCode, ignoreIllegals) {
+  function highlight(codeOrLanguageName?, optionsOrCode?, ignoreIllegals?) {
     let code = ''
     let languageName = ''
     if (typeof optionsOrCode === 'object') {
@@ -953,10 +948,11 @@ const HLJS = function (hljs) {
       ignoreIllegals = true
     }
 
+    type contextType = { code: any, language: any, result: any }
     const context = {
       code,
       language: languageName
-    }
+    } as contextType
     fire('before:highlight', context)
 
     const result = context.result
@@ -969,10 +965,10 @@ const HLJS = function (hljs) {
     return result
   }
   function _highlight(
-    languageName,
-    codeToHighlight,
-    ignoreIllegals,
-    continuation
+    languageName?,
+    codeToHighlight?,
+    ignoreIllegals?,
+    continuation?
   ) {
     const keywordHits = Object.create(null)
 
@@ -1036,9 +1032,7 @@ const HLJS = function (hljs) {
           true,
           continuations[top.subLanguage]
         )
-        continuations[top.subLanguage] = /** @type {CompiledMode} */ (
-          result._top
-        )
+        continuations[top.subLanguage] = result._top
       } else {
         result = highlightAuto(
           modeBuffer,
@@ -1214,9 +1208,10 @@ const HLJS = function (hljs) {
       list.forEach(item => emitter.openNode(item))
     }
 
-    let lastMatch = {}
+    type lastMatchType = { type: any, index: any, rule: any }
+    let lastMatch = {} as lastMatchType
 
-    function processLexeme(textBeforeMatch, match) {
+    function processLexeme(textBeforeMatch, match?) {
       const lexeme = match && match[0]
 
       modeBuffer += textBeforeMatch
@@ -1233,12 +1228,6 @@ const HLJS = function (hljs) {
         lexeme === ''
       ) {
         modeBuffer += codeToHighlight.slice(match.index, match.index + 1)
-        if (!SAFE_MODE) {
-          const err = new Error(`0 width match regex (${languageName})`)
-          err.languageName = languageName
-          err.badRule = lastMatch.rule
-          throw err
-        }
         return 1
       }
       lastMatch = match
@@ -1246,7 +1235,7 @@ const HLJS = function (hljs) {
       if (match.type === 'begin') {
         return doBeginMatch(match)
       } else if (match.type === 'illegal' && !ignoreIllegals) {
-        const err = new Error(
+        const err: any = new Error(
           'Illegal lexeme "' +
           lexeme +
           '" for mode "' +
@@ -1283,15 +1272,15 @@ const HLJS = function (hljs) {
     }
 
     const md = compileLanguage(language)
-    let result = ''
+    let result: string = ''
     let top = continuation || md
     const continuations = {}
     const emitter = new options.__emitter(options)
     processContinuations()
-    let modeBuffer = ''
-    let relevance = 0
-    let index = 0
-    let iterations = 0
+    let modeBuffer: string = ''
+    let relevance: number = 0
+    let index: number = 0
+    let iterations: number = 0
     let resumeScanAtSamePosition = false
 
     try {
@@ -1371,7 +1360,7 @@ const HLJS = function (hljs) {
     return result
   }
 
-  function highlightAuto(code, languageSubset) {
+  function highlightAuto(code, languageSubset?) {
     languageSubset =
       languageSubset || options.languages || Object.keys(languages)
     const plaintext = justTextHighlightResult(code)
