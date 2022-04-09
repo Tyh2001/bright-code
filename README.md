@@ -31,8 +31,8 @@ Configure the following contents in `main.js`
 ```js
 import { createApp } from 'vue'
 import App from './App.vue'
-import brightCode from './bright-code'
-import './bright-code/theme/tyh-theme.css'
+import brightCode from 'bright-code'
+import 'bright-code/theme/index.css'
 
 createApp(App)
   .use((app) => {
