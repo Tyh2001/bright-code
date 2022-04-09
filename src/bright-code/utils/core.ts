@@ -128,8 +128,9 @@ class HTMLRenderer {
   }
 }
 
+type rootNodeType = { children: [] }
 class TokenTree {
-  rootNode: object
+  rootNode: rootNodeType
   stack: object[]
 
   constructor() {
@@ -137,7 +138,7 @@ class TokenTree {
     this.stack = [this.rootNode]
   }
 
-  get top() {
+  get top(): any {
     return this.stack[this.stack.length - 1]
   }
 
@@ -656,7 +657,7 @@ function compileLanguage(language) {
   }
   class MultiRegex {
     matchIndexes: Object
-    regexes: []
+    regexes: any
     matchAt: number
     position: number
     matcherRe: any
@@ -671,6 +672,7 @@ function compileLanguage(language) {
     addRule(re, opts) {
       opts.position = this.position++
       this.matchIndexes[this.matchAt] = opts
+
       this.regexes.push([opts, re])
       this.matchAt += countMatchGroups(re) + 1
     }
@@ -703,8 +705,8 @@ function compileLanguage(language) {
   }
 
   class ResumableMultiRegex {
-    rules: []
-    multiRegexes: []
+    rules: any
+    multiRegexes: any
     count: number
     lastIndex: number
     regexIndex: number
@@ -721,7 +723,9 @@ function compileLanguage(language) {
       if (this.multiRegexes[index]) return this.multiRegexes[index]
 
       const matcher = new MultiRegex()
-      this.rules.slice(index).forEach(([re, opts]) => matcher.addRule(re, opts))
+      this.rules.slice(index).forEach(([re, opts]: any) => {
+        matcher.addRule(re, opts)
+      })
       matcher.compile()
       this.multiRegexes[index] = matcher
       return matcher
