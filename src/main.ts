@@ -2,8 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import brightCode from './bright-code'
 import './bright-code/theme/tyh-theme.css'
-// import brightCode from 'bright-code'
-// import 'bright-code/theme/tyh-theme.css'
 
 createApp(App)
   .use(app => {
