@@ -102,7 +102,7 @@ body > .tyh-container {
 
 <style scoped>
 #app {
-  max-width: 900px;
+  max-width: 700px;
   margin: auto;
 }
 #app h1,

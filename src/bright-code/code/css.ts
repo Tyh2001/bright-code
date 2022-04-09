@@ -114,7 +114,7 @@ const TAGS = [
   'ul',
   'var',
   'video'
-]
+] as const
 const MEDIA_FEATURES = [
   'any-hover',
   'any-pointer',
@@ -149,7 +149,7 @@ const MEDIA_FEATURES = [
   'max-width',
   'min-height',
   'max-height'
-]
+] as const
 const PSEUDO_CLASSES = [
   'active',
   'any-link',
@@ -210,7 +210,7 @@ const PSEUDO_CLASSES = [
   'valid',
   'visited',
   'where'
-]
+] as const
 
 const PSEUDO_ELEMENTS = [
   'after',
@@ -227,7 +227,7 @@ const PSEUDO_ELEMENTS = [
   'selection',
   'slotted',
   'spelling-error'
-]
+] as const
 
 const ATTRIBUTES = [
   'align-content',

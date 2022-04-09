@@ -38,8 +38,8 @@ const KEYWORDS = [
   'from',
   'export',
   'extends'
-]
-const LITERALS = ['true', 'false', 'null', 'undefined', 'NaN', 'Infinity']
+] as const
+const LITERALS = ['true', 'false', 'null', 'undefined', 'NaN', 'Infinity'] as const
 
 const TYPES = [
   'Object',
@@ -81,7 +81,7 @@ const TYPES = [
   'Proxy',
   'Intl',
   'WebAssembly'
-]
+] as const
 
 const ERROR_TYPES = [
   'Error',
@@ -92,7 +92,7 @@ const ERROR_TYPES = [
   'SyntaxError',
   'TypeError',
   'URIError'
-]
+] as const
 
 const BUILT_IN_GLOBALS = [
   'setInterval',
@@ -112,7 +112,7 @@ const BUILT_IN_GLOBALS = [
   'encodeURIComponent',
   'escape',
   'unescape'
-]
+] as const
 
 const BUILT_IN_VARIABLES = [
   'arguments',
@@ -124,7 +124,7 @@ const BUILT_IN_VARIABLES = [
   'localStorage',
   'module',
   'global'
-]
+] as const
 
 const BUILT_INS = [].concat(BUILT_IN_GLOBALS, TYPES, ERROR_TYPES)
 
@@ -141,7 +141,7 @@ export const javascript = hljs => {
     begin: '<>',
     end: '</>'
   }
-  const XML_SELF_CLOSING = /<[A-Za-z0-9\\._:-]+\s*\/>/
+  const XML_SELF_CLOSING: RegExp = /<[A-Za-z0-9\\._:-]+\s*\/>/
   const XML_TAG = {
     begin: /<[A-Za-z0-9\\._:-]+/,
     end: /\/[A-Za-z0-9\\._:-]+>|\/>/,
@@ -386,7 +386,7 @@ export const javascript = hljs => {
     className: 'variable.constant'
   }
 
-  function noneOf (list) {
+  function noneOf(list) {
     return regex.concat('(?!', list.join('|'), ')')
   }
 

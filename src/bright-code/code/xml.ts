@@ -5,12 +5,22 @@ export const xml = hljs => {
     regex.optional(/[A-Z0-9_.-]*:/),
     /[A-Z0-9_.-]*/
   )
-  const XML_IDENT_RE = /[A-Za-z0-9._:-]+/
-  const XML_ENTITIES = {
+  const XML_IDENT_RE: RegExp = /[A-Za-z0-9._:-]+/
+  const XML_ENTITIES: {
+    className: string;
+    begin: RegExp;
+  } = {
     className: 'symbol',
     begin: /&[a-z]+;|&#[0-9]+;|&#x[a-f0-9]+;/
   }
-  const XML_META_KEYWORDS = {
+  const XML_META_KEYWORDS: {
+    begin: RegExp;
+    contains: {
+      className: string;
+      begin: RegExp;
+      illegal: RegExp;
+    }[];
+  } = {
     begin: /\s/,
     contains: [
       {

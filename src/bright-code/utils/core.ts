@@ -1,20 +1,20 @@
-var deepFreezeEs6 = { exports: {} }
+const deepFreezeEs6 = { exports: {} }
 
 function deepFreeze(obj) {
   if (obj instanceof Map) {
     obj.clear =
       obj.delete =
       obj.set =
-        function () {
-          throw new Error('map is read-only')
-        }
+      function () {
+        throw new Error('map is read-only')
+      }
   } else if (obj instanceof Set) {
     obj.add =
       obj.clear =
       obj.delete =
-        function () {
-          throw new Error('set is read-only')
-        }
+      function () {
+        throw new Error('set is read-only')
+      }
   }
 
   Object.freeze(obj)
@@ -31,11 +31,12 @@ function deepFreeze(obj) {
 }
 
 deepFreezeEs6.exports = deepFreeze
-deepFreezeEs6.exports.default = deepFreeze
 
-var deepFreeze$1 = deepFreezeEs6.exports
+const deepFreeze$1: {} = deepFreezeEs6.exports
 
 class Response {
+  data: any
+  isMatchIgnored: boolean
   constructor(mode) {
     if (mode.data === undefined) mode.data = {}
 
@@ -68,10 +69,10 @@ function inherit$1(original, ...objects) {
       result[key] = obj[key]
     }
   })
-  return /** @type {T} */ (result)
+  return result
 }
 
-const SPAN_CLOSE = '</span>'
+const SPAN_CLOSE: string = '</span>'
 
 const emitsWrappingTags = node => {
   return !!node.kind
@@ -89,6 +90,8 @@ const expandScopeName = (name, { prefix }) => {
 }
 
 class HTMLRenderer {
+  buffer: string
+  classPrefix: any
   constructor(parseTree, options) {
     this.buffer = ''
     this.classPrefix = options.classPrefix
@@ -126,6 +129,8 @@ class HTMLRenderer {
 }
 
 class TokenTree {
+  rootNode: object
+  stack: object[]
   constructor() {
     this.rootNode = { children: [] }
     this.stack = [this.rootNode]
@@ -193,6 +198,7 @@ class TokenTree {
 }
 
 class TokenTreeEmitter extends TokenTree {
+  options: any
   constructor(options) {
     super()
     this.options = options
@@ -284,7 +290,7 @@ function startsWith(re, lexeme) {
   return match && match.index === 0
 }
 
-const BACKREF_RE = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./
+const BACKREF_RE: RegExp = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./
 
 function _rewriteBackreferences(regexps, { joinWith }) {
   let numCaptures = 0
@@ -294,7 +300,7 @@ function _rewriteBackreferences(regexps, { joinWith }) {
       numCaptures += 1
       const offset = numCaptures
       let re = source(regex)
-      let out = ''
+      let out: string = ''
 
       while (re.length > 0) {
         const match = BACKREF_RE.exec(re)
@@ -341,23 +347,23 @@ const SHEBANG = (opts = {}) => {
 const BACKSLASH_ESCAPE = {
   begin: '\\\\[\\s\\S]',
   relevance: 0
-}
+} as const
 const APOS_STRING_MODE = {
   scope: 'string',
   begin: "'",
   end: "'",
   illegal: '\\n',
   contains: [BACKSLASH_ESCAPE]
-}
+} as const
 const QUOTE_STRING_MODE = {
   scope: 'string',
   begin: '"',
   end: '"',
   illegal: '\\n',
   contains: [BACKSLASH_ESCAPE]
-}
+} as const
 
-const COMMENT = function (begin, end, modeOptions = {}) {
+const COMMENT: Function = function (begin, end, modeOptions = {}): void {
   const mode = inherit$1(
     {
       scope: 'comment',
@@ -418,7 +424,7 @@ const REGEXP_MODE = {
   ]
 }
 
-var MODES = /*#__PURE__*/ Object.freeze({
+const MODES = Object.freeze({
   __proto__: null,
   SHEBANG: SHEBANG,
   BACKSLASH_ESCAPE,
@@ -430,21 +436,21 @@ var MODES = /*#__PURE__*/ Object.freeze({
   REGEXP_MODE
 })
 
-function skipIfHasPrecedingDot(match, response) {
+function skipIfHasPrecedingDot(match, response): void {
   const before = match.input[match.index - 1]
   if (before === '.') {
     response.ignoreMatch()
   }
 }
 
-function scopeClassName(mode, _parent) {
+function scopeClassName(mode, _parent): void {
   if (mode.className !== undefined) {
     mode.scope = mode.className
     delete mode.className
   }
 }
 
-function beginKeywords(mode, parent) {
+function beginKeywords(mode, parent): void {
   if (!parent) return
   if (!mode.beginKeywords) return
   mode.begin =
@@ -456,13 +462,13 @@ function beginKeywords(mode, parent) {
   if (mode.relevance === undefined) mode.relevance = 0
 }
 
-function compileIllegal(mode, _parent) {
+function compileIllegal(mode, _parent): void {
   if (!Array.isArray(mode.illegal)) return
 
   mode.illegal = either(...mode.illegal)
 }
 
-function compileMatch(mode, _parent) {
+function compileMatch(mode, _parent): void {
   if (!mode.match) return
   if (mode.begin || mode.end)
     throw new Error('begin & end are not supported with match')
@@ -475,7 +481,7 @@ function compileRelevance(mode, _parent) {
   if (mode.relevance === undefined) mode.relevance = 1
 }
 
-const beforeMatchExt = (mode, parent) => {
+const beforeMatchExt: Function = (mode, parent) => {
   if (!mode.beforeMatch) return
   if (mode.starts) throw new Error('beforeMatch cannot be used with starts')
 
@@ -507,9 +513,9 @@ const COMMON_KEYWORDS = [
   'parent',
   'list',
   'value'
-]
+] as const
 
-const DEFAULT_KEYWORD_SCOPE = 'keyword'
+const DEFAULT_KEYWORD_SCOPE: string = 'keyword'
 
 function compileKeywords(
   rawKeywords,
@@ -641,12 +647,18 @@ function compileLanguage(language) {
     return new RegExp(
       source(value),
       'm' +
-        (language.case_insensitive ? 'i' : '') +
-        (language.unicodeRegex ? 'u' : '') +
-        (global ? 'g' : '')
+      (language.case_insensitive ? 'i' : '') +
+      (language.unicodeRegex ? 'u' : '') +
+      (global ? 'g' : '')
     )
   }
   class MultiRegex {
+    matchIndexes: Object
+    regexes: []
+    matchAt: number
+    position: number
+    matcherRe: any
+    lastIndex: number
     constructor() {
       this.matchIndexes = {}
       this.regexes = []
@@ -689,6 +701,11 @@ function compileLanguage(language) {
   }
 
   class ResumableMultiRegex {
+    rules: []
+    multiRegexes: []
+    count: number
+    lastIndex: number
+    regexIndex: number
     constructor() {
       this.rules = []
       this.multiRegexes = []
@@ -766,16 +783,16 @@ function compileLanguage(language) {
   function compileMode(mode, parent) {
     const cmode = mode
     if (mode.isCompiled) return cmode
-    ;[scopeClassName, compileMatch, MultiClass, beforeMatchExt].forEach(ext =>
-      ext(mode, parent)
-    )
+      ;[scopeClassName, compileMatch, MultiClass, beforeMatchExt].forEach(ext =>
+        ext(mode, parent)
+      )
 
     language.compilerExtensions.forEach(ext => ext(mode, parent))
 
     mode.__beforeBegin = null
-    ;[beginKeywords, compileIllegal, compileRelevance].forEach(ext =>
-      ext(mode, parent)
-    )
+      ;[beginKeywords, compileIllegal, compileRelevance].forEach(ext =>
+        ext(mode, parent)
+      )
 
     mode.isCompiled = true
 
@@ -1073,7 +1090,7 @@ const HLJS = function (hljs) {
           emitter.addKeyword(
             modeBuffer,
             language.classNameAliases[mode.beginScope._wrap] ||
-              mode.beginScope._wrap
+            mode.beginScope._wrap
           )
           modeBuffer = ''
         } else if (mode.beginScope._multi) {
@@ -1231,10 +1248,10 @@ const HLJS = function (hljs) {
       } else if (match.type === 'illegal' && !ignoreIllegals) {
         const err = new Error(
           'Illegal lexeme "' +
-            lexeme +
-            '" for mode "' +
-            (top.scope || '<unnamed>') +
-            '"'
+          lexeme +
+          '" for mode "' +
+          (top.scope || '<unnamed>') +
+          '"'
         )
         err.mode = top
         throw err
@@ -1280,7 +1297,7 @@ const HLJS = function (hljs) {
     try {
       top.matcher.considerAll()
 
-      for (;;) {
+      for (; ;) {
         iterations++
         if (resumeScanAtSamePosition) {
           resumeScanAtSamePosition = false
